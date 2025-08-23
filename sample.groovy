@@ -14,12 +14,14 @@ pipeline {
         }
         
         stage('Build') {
-            dir('student-app') { 
-                sh 'mvn clean package'
+            steps {
+                dir('student-app') { 
+                    sh 'mvn clean package'
+                }
+                echo "Building Successfully.."
             }
-            echo "Building Successfully.."
         }
-        
+
         stage('Test') {
             steps {
                 echo 'Testing Successfully..'
