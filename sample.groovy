@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    tools {
+        maven 'Maven-3.9.10'
+    }
+
     stages {
         stage('Pull') {
             steps {
@@ -9,8 +14,8 @@ pipeline {
         }
         stage('Building') {
             steps {
-               sh '/opt/apache-maven-3.9.10/bin/mvn clean package'
-            //    sh 'mvn clean package'
+            //    sh '/opt/apache-maven-3.9.10/bin/mvn clean package'
+               sh 'mvn clean package'
                echo "building successfully!"
             }
         }
