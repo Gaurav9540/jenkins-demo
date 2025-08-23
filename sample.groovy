@@ -4,13 +4,14 @@ pipeline {
     stages {
         stage('pull'){
             steps{
-                git branch: 'main', url: 'https://github.com/Gaurav9540/spotify-clone.git'
+                git branch: 'main', url: 'https://github.com/SurajBele/studentapp.ui.git'
                 echo 'Pulling Successfully..'
             }
         }
         
         stage('Build') {
             steps {
+                sh 'mvn clean package'
                 echo 'Building Successfully..'
             }
         }
