@@ -1,35 +1,39 @@
 pipeline {
     agent any
-
-    environment {
-        PATH = "/opt/apache-maven-3.9.10/bin:${PATH}"
-    }
-
     stages {
-        stage('pull'){
-            steps{
-                git branch: 'main', url: 'https://github.com/SurajBele/studentapp.ui.git'
-                echo 'Pulling Successfully..'
+        stage('Pull') {
+            steps {
+                git branch: 'main', url: 'https://github.com/SurajBele/studentdata.git'
+                echo "pulling successfully!"
             }
         }
-        
-        stage('Build') {
+        stage('Building') {
             steps {
-                dir('student-app') { 
-                    sh 'mvn clean package'
-                }
-                echo "Building Successfully.."
+                sh 'mvn clean package'
+                echo "building successfully!"
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing Successfully..'
+                // withSonarQubeEnv(installationName: 'sonar-server', credentialsId: 'sonar-token') {
+                //   sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=myproject'
+                // }
+                echo "testing successfully!"
             }
         }
+
+        stage('QualityGate') {
+            steps {
+                // waitForQualityGate abortPipeline: false, credentialsId: 'sonar-secret-key'
+                echo "qulity gate check successfully!"
+            }
+        }
+
         stage('Deploy') {
             steps {
-                echo 'Deploying Successfully....'
+                // deploy adapters: [tomcat9(credentialsId: 'tomcat-pass', path: '', url: 'http://65.0.73.96:8080/')], contextPath: '/', war: '**/*.war'
+                echo "deploy successfully!"
             }
         }
     }
