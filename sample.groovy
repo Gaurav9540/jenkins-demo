@@ -38,20 +38,20 @@ pipeline {
             }
         }
 
-        // stage('Docker Push') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-        //             sh """
-        //               echo "$PASS" | docker login -u "$USER" --password-stdin
-        //               docker tag ${IMAGE}:${IMAGE_TAG} ${IMAGE}:latest
-        //               docker push ${IMAGE}:${IMAGE_TAG}
-        //               docker push ${IMAGE}:latest
-        //               docker logout
-        //             """
-        //         }
-        //         echo "Image pushed to Docker Hub!"
-        //     }
-        // }
+        stage('Docker Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh """
+                      echo "$PASS" | docker login -u "$USER" --password-stdin
+                      docker tag ${IMAGE}:${IMAGE_TAG} ${IMAGE}:latest
+                      docker push ${IMAGE}:${IMAGE_TAG}
+                      docker push ${IMAGE}:latest
+                      docker logout
+                    """
+                }
+                echo "Image pushed successfully to Docker Hub!"
+            }
+        }
 
         stage('Test') {
             steps {
