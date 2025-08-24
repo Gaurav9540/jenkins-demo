@@ -79,7 +79,7 @@ pipeline {
         }
 
         // Deployment Stage
-        stage('Deploy') {
+        stage('Deploy to Tomcat') {
             steps {
                 // deploy adapters: [tomcat9(credentialsId: 'tomcat-pass', path: '', url: 'http://65.0.73.96:8080/')], contextPath: '/', war: '**/*.war'
                 echo "deploy successfully!"
@@ -87,7 +87,7 @@ pipeline {
         }
 
         // Run Container 
-        stage('Deploy (Run Container)') {
+        stage('Deploy with Docker') {
             steps {
                 sh """
                   docker rm -f ${APP_NAME} || true
