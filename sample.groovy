@@ -5,6 +5,7 @@ pipeline {
     //     maven 'Maven-3.9.10'
     // }
 
+    // Environment Variables
     environment {
         APP_NAME = 'mvn-project'
         DOCKERHUB_USER = 'bala976'   
@@ -12,12 +13,16 @@ pipeline {
     }
 
     stages {
+
+        // Pulling Stage
         stage('Pull') {
             steps {
                 git branch: 'main', url: 'https://github.com/Gaurav9540/mvn-project.git'
                 echo "pulling successfully!"
             }
         }
+
+        // Building Stage
         stage('Building') {
             steps {
             //    sh '/opt/apache-maven-3.9.10/bin/mvn clean package'
@@ -26,6 +31,7 @@ pipeline {
             }
         }
 
+        // Docker Image Build Stage
         stage('Docker Build') {
             steps {
                 script {
@@ -38,6 +44,7 @@ pipeline {
             }
         }
 
+        // Docker Image Push to Dockerhub Stage        
         stage('Docker Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
@@ -53,6 +60,7 @@ pipeline {
             }
         }
 
+        // Testing Stage
         stage('Test') {
             steps {
                 // withSonarQubeEnv(installationName: 'sonar-server', credentialsId: 'sonar-token') {
@@ -62,6 +70,7 @@ pipeline {
             }
         }
 
+        // QualityGate Check Test
         stage('QualityGate') {
             steps {
                 // waitForQualityGate abortPipeline: false, credentialsId: 'sonar-secret-key'
@@ -69,6 +78,7 @@ pipeline {
             }
         }
 
+        // Deployment Stage
         stage('Deploy') {
             steps {
                 // deploy adapters: [tomcat9(credentialsId: 'tomcat-pass', path: '', url: 'http://65.0.73.96:8080/')], contextPath: '/', war: '**/*.war'
@@ -76,15 +86,15 @@ pipeline {
             }
         }
 
-        // stage('Deploy (Run Container)') {
-        //     steps {
-        //         sh """
-        //           docker rm -f ${APP_NAME} || true
-        //           docker run -d --name ${APP_NAME} -p 8080:8080 ${IMAGE}:latest
-        //         """
-        //         echo "Container deployed and running on port 8080"
-        //     }
-        // }
-
+        // Run Container 
+        stage('Deploy (Run Container)') {
+            steps {
+                sh """
+                  docker rm -f ${APP_NAME} || true
+                  docker run -d --name ${APP_NAME} -p 8081:8080 ${IMAGE}:latest
+                """
+                echo "Container deployed and running on port 8081"
+            }
+        }
     }
 }
