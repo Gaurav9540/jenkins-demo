@@ -5,10 +5,16 @@ pipeline {
     //     maven 'Maven-3.9.10'
     // }
 
+    environment {
+        APP_NAME = 'mvn-project'
+        DOCKERHUB_USER = 'bala976'   
+        IMAGE = "${DOCKERHUB_USER}/${APP_NAME}"
+    }
+
     stages {
         stage('Pull') {
             steps {
-                git branch: 'main', url: 'https://github.com/SurajBele/studentdata.git'
+                git branch: 'main', url: 'https://github.com/Gaurav9540/mvn-project.git'
                 echo "pulling successfully!"
             }
         }
@@ -19,6 +25,33 @@ pipeline {
                echo "building successfully!"
             }
         }
+
+        stage('Docker Build') {
+            steps {
+                script {
+                    def shortSha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+                    env.IMAGE_TAG = "${env.BUILD_NUMBER}-${shortSha}"
+                }
+                sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
+                sh "docker images | grep ${APP_NAME}"
+                echo "Image Build successfully!"
+            }
+        }
+
+        // stage('Docker Push') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+        //             sh """
+        //               echo "$PASS" | docker login -u "$USER" --password-stdin
+        //               docker tag ${IMAGE}:${IMAGE_TAG} ${IMAGE}:latest
+        //               docker push ${IMAGE}:${IMAGE_TAG}
+        //               docker push ${IMAGE}:latest
+        //               docker logout
+        //             """
+        //         }
+        //         echo "Image pushed to Docker Hub!"
+        //     }
+        // }
 
         stage('Test') {
             steps {
@@ -42,5 +75,16 @@ pipeline {
                 echo "deploy successfully!"
             }
         }
+
+        // stage('Deploy (Run Container)') {
+        //     steps {
+        //         sh """
+        //           docker rm -f ${APP_NAME} || true
+        //           docker run -d --name ${APP_NAME} -p 8080:8080 ${IMAGE}:latest
+        //         """
+        //         echo "Container deployed and running on port 8080"
+        //     }
+        // }
+
     }
 }
