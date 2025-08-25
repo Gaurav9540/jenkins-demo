@@ -92,7 +92,7 @@ pipeline {
             steps {
                 sh """
                   docker rm -f ${APP_NAME} || true
-                  docker run -d --name ${APP_NAME} -p 8081:8080 ${IMAGE}:latest
+                  docker run -d --name ${APP_NAME} -p 8083:8080 ${IMAGE}:latest
                 """
                 echo "Container deployed and running on port 8081"
             }
