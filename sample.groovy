@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    // tools {
-    //     maven 'Maven-3.9.10'
-    // }
-
     // Environment Variables
     environment {
         APP_NAME = 'mvn-project'
@@ -27,7 +23,7 @@ pipeline {
             steps {
             //    sh '/opt/apache-maven-3.9.10/bin/mvn clean package'
                sh 'mvn clean package'
-               echo "building successfully!"
+               echo "Build completed successfully!"
             }
         }
 
@@ -40,7 +36,7 @@ pipeline {
                 }
                 sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
                 sh "docker images | grep ${APP_NAME}"
-                echo "Image Build successfully!"
+                echo "Docker image built successfully!"
             }
         }
 
@@ -82,7 +78,7 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 // deploy adapters: [tomcat9(credentialsId: 'tomcat-pass', path: '', url: 'http://65.0.73.96:8080/')], contextPath: '/', war: '**/*.war'
-                echo "deploy successfully!"
+                echo "Deploy Successfully!"
             }
         }
 
