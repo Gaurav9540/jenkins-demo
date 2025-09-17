@@ -51,17 +51,39 @@ pipeline {
         }
 
         // Docker Image Build Stage
+        // stage('Docker Build') {
+        //     steps {
+        //         script {
+        //             def shortSha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+        //             env.IMAGE_TAG = "${env.BUILD_NUMBER}-${shortSha}"
+        //         }
+        //         sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
+        //         sh "docker images | grep ${APP_NAME}"
+        //         echo "Docker image built successfully!"
+        //     }
+        // }
+
+
         stage('Docker Build') {
-            steps {
-                script {
-                    def shortSha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-                    env.IMAGE_TAG = "${env.BUILD_NUMBER}-${shortSha}"
-                }
-                sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
-                sh "docker images | grep ${APP_NAME}"
-                echo "Docker image built successfully!"
-            }
+    steps {
+        script {
+            // 🔹 Force checkout from master branch
+            checkout([$class: 'GitSCM',
+                branches: [[name: '*/master']],
+                userRemoteConfigs: [[url: 'https://github.com/Yash2-27/EMS.git']]
+            ])
+
+            def shortSha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+            env.IMAGE_TAG = "${env.BUILD_NUMBER}-${shortSha}"
+
+            sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
+            sh "docker images | grep ${APP_NAME}"
+            echo "Docker image built successfully!"
         }
+    }
+}
+
+
 
         // Docker Image Push to Dockerhub Stage        
         stage('Docker Push') {
