@@ -1,10 +1,10 @@
 pipeline {
     
-    // agent any
+    agent any
 
-    agent {
-        label 'node-1'
-    }
+    // agent {
+    //     label 'node-1'
+    // }
 
     // Environment Variables
     environment {
