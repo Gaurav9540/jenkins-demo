@@ -50,7 +50,7 @@ pipeline {
             }
         }
 
-        Docker Image Build Stage
+        // Docker Image Build Stage
         stage('Docker Build') {
             steps {
                 script {
