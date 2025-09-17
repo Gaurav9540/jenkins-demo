@@ -18,8 +18,8 @@ pipeline {
         // Pulling Stage
         stage('Pull') {
             steps {
-                git branch: 'main', url: 'https://github.com/Gaurav9540/mvn-project.git'
-                // git branch: 'main', url: 'https://github.com/Yash2-27/EMS.git'
+                // git branch: 'main', url: 'https://github.com/Gaurav9540/mvn-project.git'
+                git branch: 'main', url: 'https://github.com/Gaurav9540/CMS.git'
                 echo "pulling successfully!"
             }
         }
