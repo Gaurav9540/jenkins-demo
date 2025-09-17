@@ -18,8 +18,8 @@ pipeline {
         // Pulling Stage
         stage('Pull') {
             steps {
-                // git branch: 'main', url: 'https://github.com/Gaurav9540/mvn-project.git'
-                git branch: 'main', url: 'https://github.com/Yash2-27/EMS.git'
+                git branch: 'main', url: 'https://github.com/Gaurav9540/mvn-project.git'
+                // git branch: 'main', url: 'https://github.com/Yash2-27/EMS.git'
                 echo "pulling successfully!"
             }
         }
@@ -50,37 +50,37 @@ pipeline {
             }
         }
 
-        // Docker Image Build Stage
-        // stage('Docker Build') {
-        //     steps {
-        //         script {
-        //             def shortSha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-        //             env.IMAGE_TAG = "${env.BUILD_NUMBER}-${shortSha}"
-        //         }
-        //         sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
-        //         sh "docker images | grep ${APP_NAME}"
-        //         echo "Docker image built successfully!"
-        //     }
-        // }
-
-
+        Docker Image Build Stage
         stage('Docker Build') {
-    steps {
-        script {
-            // 🔹 Force checkout from master branch
-            checkout([$class: 'GitSCM',
-                branches: [[name: '*/master']],
-                userRemoteConfigs: [[url: 'https://github.com/Yash2-27/EMS.git']]
-            ])
-
-            def shortSha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-            env.IMAGE_TAG = "${env.BUILD_NUMBER}-${shortSha}"
-
-            sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
-            sh "docker images | grep ${APP_NAME}"
-            echo "Docker image built successfully!"
+            steps {
+                script {
+                    def shortSha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+                    env.IMAGE_TAG = "${env.BUILD_NUMBER}-${shortSha}"
+                }
+                sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
+                sh "docker images | grep ${APP_NAME}"
+                echo "Docker image built successfully!"
+            }
         }
-    }
+
+
+        // stage('Docker Build') {
+        // steps {
+        //    script {
+        //      // 🔹 Force checkout from master branch
+        //       checkout([$class: 'GitSCM',
+        //         branches: [[name: '*/master']],
+        //         userRemoteConfigs: [[url: 'https://github.com/Yash2-27/EMS.git']]
+        //       ])
+
+        //       def shortSha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+        //       env.IMAGE_TAG = "${env.BUILD_NUMBER}-${shortSha}"
+
+        //       sh "docker build -t ${IMAGE}:${IMAGE_TAG} ."
+        //       sh "docker images | grep ${APP_NAME}"
+        //       echo "Docker image built successfully!"
+        //    }
+        // }
 }
 
 
