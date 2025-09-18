@@ -8,7 +8,7 @@ pipeline {
 
     // Environment Variables
     environment {
-        APP_NAME = 'cms-project'
+        APP_NAME = 'mvn-project'
         DOCKERHUB_USER = 'bala976'   
         IMAGE = "${DOCKERHUB_USER}/${APP_NAME}"
     }
