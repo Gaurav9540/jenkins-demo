@@ -133,10 +133,11 @@ pipeline {
                       sort -rk2 | \
                       tail -n +3 | \
                       awk '{print \$1}' | \
-                      xargs -r docker rmi -f
+                      grep -v '<none>' | \
+                      xargs -r docker rmi -f || true
 
                       # Remove dangling images, stopped containers, unused volumes
-                      docker system prune -af --volumes
+                      docker system prune -af --volumes || true 
                     """
                     echo "Cleaning up old Docker images Successfully!"
                 }
