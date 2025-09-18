@@ -18,8 +18,8 @@ pipeline {
         // Pulling Stage
         stage('Pull') {
             steps {
-                git branch: 'main', url: 'https://github.com/Gaurav9540/mvn-project.git'
-                // git branch: 'main', url: 'https://github.com/Gaurav9540/CMS.git'
+                // git branch: 'main', url: 'https://github.com/Gaurav9540/mvn-project.git'
+                git branch: 'main', url: 'https://github.com/Gaurav9540/CMS.git'
                 echo "pulling successfully!"
             }
         }
@@ -81,8 +81,6 @@ pipeline {
         //       echo "Docker image built successfully!"
         //    }
         // }
-
-
 
 
         // Docker Image Push to Dockerhub Stage        
