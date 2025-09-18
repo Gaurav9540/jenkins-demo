@@ -128,7 +128,7 @@ pipeline {
                       echo "Cleaning up old Docker images (keeping only last 2)!"
 
                       # Get the 2 most recent image IDs for this repo
-                      keep_ids=\$(docker images ${IMAGE} --format '{{.ID}}' | head -n 2)
+                      keep_ids=\$(docker images ${IMAGE} --format '{{.CreatedAt}} {{.ID}}' | sort -r | awk '{print \$2}' | head -n 2)
 
                       # Get IDs of all running containers' images
                       running_ids=\$(docker ps --format '{{.Image}}' | xargs -r docker inspect --format '{{.Id}}')
