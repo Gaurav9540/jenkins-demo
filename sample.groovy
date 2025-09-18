@@ -120,26 +120,27 @@ pipeline {
             }
         }
 
-         // 🔥 Cleanup Stage
-    stage('Cleanup Old Images') {
-        steps {
-            script {
-                sh """
-                  echo "Cleaning up old Docker images..."
-                  # Keep latest image only, remove older ones
-                  docker images --format "{{.Repository}}:{{.Tag}} {{.CreatedAt}}" | \
-                  grep ${IMAGE} | \
-                  sort -rk2 | \
-                  tail -n +2 | \
-                  awk '{print \$1}' | \
-                  xargs -r docker rmi -f
+        // Cleanup Stage
+        stage('Cleanup Old Images') {
+            steps {
+                script {
+                  sh """
+                      echo "Cleaning up old Docker images (keeping only last 2)!"
 
-                  # Remove dangling images, stopped containers, unused volumes
-                  docker system prune -af --volumes
-                """
+                      # Keep latest 2 image only, remove older than 2 images
+                      docker images --format "{{.Repository}}:{{.Tag}} {{.CreatedAt}}" | \
+                      grep ${IMAGE} | \
+                      sort -rk2 | \
+                      tail -n +3 | \
+                      awk '{print \$1}' | \
+                      xargs -r docker rmi -f
+
+                      # Remove dangling images, stopped containers, unused volumes
+                      docker system prune -af --volumes
+                    """
+                    echo "Cleaning up old Docker images Successfully!"
+                }
             }
         }
-    }
-
     }
 }
