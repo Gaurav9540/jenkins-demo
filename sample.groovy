@@ -127,17 +127,25 @@ pipeline {
                   sh """
                       echo "Cleaning up old Docker images (keeping only last 2)!"
 
-                      # Keep latest 2 image only, remove older than 2 images
-                      docker images --format "{{.Repository}}:{{.Tag}} {{.CreatedAt}}" | \
-                      grep ${IMAGE} | \
-                      sort -rk2 | \
-                      tail -n +3 | \
-                      awk '{print \$1}' | \
-                      grep -v '<none>' | \
-                      xargs -r docker rmi -f || true
+                      # Get the 2 most recent image IDs for this repo
+                      keep_ids=\$(docker images ${IMAGE} --format '{{.ID}}' | head -n 2)
 
-                      # Remove dangling images, stopped containers, unused volumes
-                      docker system prune -af --volumes || true 
+                      # Get IDs of all running containers' images
+                      running_ids=\$(docker ps --format '{{.Image}}' | xargs -r docker inspect --format '{{.Id}}')
+
+                      # Combine keep_ids + running_ids
+                      safe_ids="\$keep_ids \$running_ids"
+
+                      # Loop through images of this repo and delete only unsafe ones
+                      for id in \$(docker images ${IMAGE} --format '{{.ID}}'); do
+                        if ! echo "\$safe_ids" | grep -q "\$id"; then
+                            echo "Removing old image: \$id"
+                            docker rmi -f \$id || true
+                        fi
+                      done
+
+                      # Prune dangling stuff (does not touch running containers)
+                      docker system prune -af --volumes || true
                     """
                     echo "Cleaning up old Docker images Successfully!"
                 }
