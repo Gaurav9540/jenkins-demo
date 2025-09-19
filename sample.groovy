@@ -1,7 +1,9 @@
 pipeline {
-    
+
+    // For only single node
     agent any
 
+    // For master-slave architecture
     // agent {
     //     label 'node-1'
     // }
@@ -63,7 +65,7 @@ pipeline {
             }
         }
 
-
+         
         // stage('Docker Build') {
         // steps {
         //    script {
@@ -114,7 +116,7 @@ pipeline {
                   docker rm -f ${APP_NAME} || true
                   docker run -d --name ${APP_NAME} -p 8083:8080 ${IMAGE}:latest
                 """
-                echo "Container deployed and running on port 8083"
+                echo "Container deployed successfully and running on port 8083!"
             }
         }
 
